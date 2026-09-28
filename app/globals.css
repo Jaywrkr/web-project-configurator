@@ -145,3 +145,11 @@ to{opacity:1;transform:translateY(0)}}
 .admin-table td a:hover{text-decoration:underline}
 .admin-empty{padding:70px 30px;background:white;border:1px solid var(--line);color:#737a70;text-align:center}
 .admin-content>.summary{max-width:780px}
+.login-shell{min-height:100vh}.login-card{width:min(100% - 42px,490px);margin:clamp(70px,12vh,145px) auto;padding:38px;background:#fff;border:1px solid var(--line)}
+.login-card h1{font-size:clamp(40px,4.5vw,58px);letter-spacing:-.065em;line-height:1.06;margin:16px 0}
+.login-card>p{color:var(--muted);line-height:1.5;margin:0 0 32px}
+.login-card .fields{gap:10px}.login-card .button{margin-top:12px}
+.admin-count{font-size:12px;color:var(--muted);white-space:nowrap}
+@media(max-width:600px){.login-card{padding:26px}.admin-heading{align-items:flex-start;flex-direction:column}.admin-content{padding:40px 22px 80px}}
+.admin-pagination{display:flex;gap:20px;align-items:center;justify-content:flex-end;margin-top:20px;font-size:13px;color:var(--muted)}
+.admin-pagination a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
