@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { emptyBrief, type Brief } from "@/lib/types";
+import { emptyBrief, type Brief, type ProjectType } from "@/lib/types";
+import { projectTypes } from "@/lib/options";
 import { hasProducts, validateStep } from "@/lib/validation";
 import { Progress } from "./Progress";
 import { StepContent } from "./StepContent";
@@ -12,7 +13,7 @@ import { StepNavigation } from "./StepNavigation";
 const STORAGE_KEY = "web-project-configurator-draft-v1";
 const titles: Record<number, [string, string]> = {
   1: ["Primero, hablemos de ti.", "Los datos necesarios para poder responder a tu solicitud."],
-  2: ["La idea, en una frase.", "Elige la opción que mejor describe el proyecto."],
+  2: ["¿Qué tienes en mente?", "Selecciona todos los tipos que describan tu proyecto."],
   3: ["Démosle forma.", "Piensa en las páginas que tendrá tu web."],
   4: ["Hablemos de productos.", "El tamaño y las funciones del catálogo cambian el alcance."],
   5: ["Tu web, en tus manos.", "Define qué contenido debería ser editable por tu equipo."],
@@ -39,7 +40,11 @@ export function Wizard() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as { brief?: Partial<Brief>; step?: number };
-        if (parsed.brief && typeof parsed.brief === "object") setBrief({ ...emptyBrief, ...parsed.brief });
+        if (parsed.brief && typeof parsed.brief === "object") {
+          const previous = parsed.brief as Partial<Brief> & { project_type?: string };
+          const selected: unknown[] = Array.isArray(previous.project_types) ? previous.project_types : previous.project_type ? [previous.project_type] : [];
+          setBrief({ ...emptyBrief, ...previous, project_types: selected.filter((type): type is ProjectType => typeof type === "string" && projectTypes.some((option) => option === type)) });
+        }
         if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= 13) setStep(parsed.step);
       }
     } catch { try { localStorage.removeItem(STORAGE_KEY); } catch {} }

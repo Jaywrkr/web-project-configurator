@@ -19,7 +19,7 @@ export const pricingConfig: PricingConfig = {
 
 export function estimatePrice(brief: Brief, config = pricingConfig): number | null {
   if (!config.enabled) return null;
-  return (config.basePrice[brief.project_type] ?? 0)
+  return brief.project_types.reduce((sum, type) => sum + (config.basePrice[type] ?? 0), 0)
     + (config.pagesCost[brief.page_count] ?? 0)
     + (config.catalogCost[brief.product_count] ?? 0)
     + brief.admin_features.length * config.adminCost

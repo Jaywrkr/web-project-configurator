@@ -6,7 +6,7 @@ const value = (input: string | string[]) => Array.isArray(input) ? (input.length
 export function formatBriefEmail(brief: Brief, complexity: { score: number; level: ComplexityLevel }) {
   const groups: [string, [string, string | string[]][]][] = [
     ["CLIENTE", [["Empresa", brief.company], ["Contacto", brief.contact_name], ["Email", brief.email], ["Teléfono", brief.phone]]],
-    ["PROYECTO Y ESTRUCTURA", [["Tipo", brief.project_type], ["Secciones", brief.sections], ["Otra sección", brief.other_section], ["Cantidad de páginas", brief.page_count]]],
+    ["PROYECTO Y ESTRUCTURA", [["Tipos", brief.project_types], ["Secciones", brief.sections], ["Otra sección", brief.other_section], ["Cantidad de páginas", brief.page_count]]],
     ["PRODUCTOS Y COMERCIO", [["Cantidad de productos", brief.product_count], ["Datos de cada producto", brief.product_features], ["Acción del visitante", brief.commerce_type], ["Funciones de compra", brief.commerce_features]]],
     ["ADMINISTRACIÓN Y DISEÑO", [["Contenido editable", brief.admin_features], ["Estado de la marca", brief.brand_status], ["Sitios de referencia", brief.reference_urls]]],
     ["CONTENIDO", [["Contenido disponible", brief.available_content], ["Ayuda requerida", brief.content_help]]],

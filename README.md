@@ -1,6 +1,6 @@
 # Web Project Configurator
 
-Aplicación para definir el alcance de un proyecto web antes de cotizarlo. El cliente completa un cuestionario visual de 12 o 13 pasos; el paso de catálogo aparece solo cuando corresponde. Al final revisa su brief y lo envía por correo. No utiliza base de datos ni muestra precios al cliente.
+Aplicación para definir el alcance de un proyecto web antes de cotizarlo. El cliente completa un cuestionario visual de 12 o 13 pasos y puede seleccionar varios tipos de proyecto; el paso de catálogo aparece solo cuando corresponde. Al final revisa su brief y lo envía por correo. No utiliza base de datos ni muestra precios al cliente.
 
 ## Stack
 
@@ -62,7 +62,7 @@ La bandeja de entrada funciona como archivo de solicitudes. Puedes crear una eti
 
 ## Complejidad
 
-[`lib/complexity.ts`](lib/complexity.ts) suma puntos por tipo de proyecto, cantidad de páginas y productos, módulos editables, integraciones, ayuda con contenido y urgencia. El resultado se limita a 100. Los tramos son: Baja (0–24), Media (25–49), Alta (50–74) y Muy alta (75–100). El presupuesto declarado sirve solo como contexto comercial y nunca altera esta puntuación ni un futuro precio sugerido.
+[`lib/complexity.ts`](lib/complexity.ts) suma puntos por tipo de proyecto, cantidad de páginas y productos, módulos editables, integraciones, ayuda con contenido y urgencia. Si se eligen varios tipos, toma el de mayor complejidad y agrega 5 puntos por cada tipo adicional. El resultado se limita a 100. Los tramos son: Baja (0–24), Media (25–49), Alta (50–74) y Muy alta (75–100). El presupuesto declarado sirve solo como contexto comercial y nunca altera esta puntuación ni un futuro precio sugerido.
 
 El estimador de precio en [`lib/pricing.ts`](lib/pricing.ts) está desactivado (`enabled: false`). Los importes configurables todavía no están definidos.
 

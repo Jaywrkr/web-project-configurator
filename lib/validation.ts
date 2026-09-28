@@ -1,7 +1,7 @@
 import type { Brief } from "./types";
 
 export function hasProducts(brief: Brief) {
-  return brief.project_type === "Catálogo" || brief.project_type === "E-commerce" || brief.sections.includes("Productos");
+  return brief.project_types.includes("Catálogo") || brief.project_types.includes("E-commerce") || brief.sections.includes("Productos");
 }
 
 export function validateStep(step: number, brief: Brief): string | null {
@@ -10,7 +10,7 @@ export function validateStep(step: number, brief: Brief): string | null {
       if (!brief.company.trim() || !brief.contact_name.trim()) return "Completa la empresa y el nombre de contacto.";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(brief.email.trim())) return "Ingresa un email válido.";
       return null;
-    case 2: return brief.project_type ? null : "Elige el tipo de proyecto.";
+    case 2: return brief.project_types.length ? null : "Selecciona al menos un tipo de proyecto.";
     case 3:
       if (!brief.sections.length) return "Selecciona al menos una sección.";
       if (brief.sections.includes("Otra") && !brief.other_section.trim()) return "Especifica la otra sección.";

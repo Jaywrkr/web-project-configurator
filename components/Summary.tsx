@@ -8,7 +8,7 @@ export function Summary({ brief, admin = false, storedComplexity }: { brief: Bri
   const complexity = storedComplexity ?? calculateComplexity(brief);
   const rows: { title: string; fields: [string, string | string[]][] }[] = [
     { title: "01 / Cliente", fields: [["Empresa", brief.company], ["Contacto", brief.contact_name], ["Email", brief.email], ["Teléfono", brief.phone]] },
-    { title: "02 / Proyecto", fields: [["Tipo", brief.project_type], ["Secciones", [...brief.sections.filter((s) => s !== "Otra"), ...(brief.other_section ? [brief.other_section] : [])]], ["Páginas", brief.page_count]] },
+    { title: "02 / Proyecto", fields: [["Tipos", brief.project_types], ["Secciones", [...brief.sections.filter((s) => s !== "Otra"), ...(brief.other_section ? [brief.other_section] : [])]], ["Páginas", brief.page_count]] },
     { title: "03 / Catálogo", fields: [["Productos", brief.product_count], ["Detalles por producto", brief.product_features], ["Experiencia", brief.commerce_type], ["Funciones de compra", brief.commerce_features]] },
     { title: "04 / Administración y diseño", fields: [["Contenido editable", brief.admin_features], ["Identidad visual", brief.brand_status], ["Referencias", brief.reference_urls]] },
     { title: "05 / Contenido", fields: [["Contenido disponible", brief.available_content], ["Ayuda requerida", brief.content_help]] },

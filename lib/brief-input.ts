@@ -14,7 +14,7 @@ export function parseBrief(input: unknown): Brief {
   const brief: Brief = {
     ...emptyBrief,
     company: clean(data.company, 120), contact_name: clean(data.contact_name, 120), email: clean(data.email, 254), phone: clean(data.phone, 40),
-    project_type: pick(data.project_type, choices.projectTypes) as ProjectType | "",
+    project_types: (Array.isArray(data.project_types) ? pickMany(data.project_types, choices.projectTypes) : [pick(data.project_type, choices.projectTypes)].filter(Boolean)) as ProjectType[],
     sections: pickMany(data.sections, choices.sections), other_section: clean(data.other_section, 120), page_count: pick(data.page_count, choices.pageCounts),
     product_count: pick(data.product_count, choices.productCounts), product_features: pickMany(data.product_features, choices.productFeatures),
     commerce_type: pick(data.commerce_type, choices.commerceTypes), commerce_features: pickMany(data.commerce_features, choices.commerceFeatures),
