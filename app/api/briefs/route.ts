@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 import { calculateComplexity } from "@/lib/complexity";
 import { BriefValidationError, parseBrief } from "@/lib/brief-input";
 import { formatBriefEmail } from "@/lib/brief-email";
+
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
@@ -9,21 +12,23 @@ export async function POST(request: Request) {
     if (raw.length > 50000) return NextResponse.json({ error: "La solicitud es demasiado grande." }, { status: 413 });
     const payload: unknown = JSON.parse(raw);
     const brief = parseBrief(payload);
-    const candidateId = payload && typeof payload === "object" && "request_id" in payload ? payload.request_id : null;
-    const requestId = typeof candidateId === "string" && /^[0-9a-f-]{36}$/i.test(candidateId) ? candidateId : crypto.randomUUID();
     const complexity = calculateComplexity(brief);
-    const apiKey = process.env.RESEND_API_KEY;
-    const from = process.env.BRIEF_FROM_EMAIL;
-    const to = process.env.BRIEF_TO_EMAIL;
-    if (!apiKey || !from || !to) throw new Error("Email no configurado.");
+    const user = process.env.GMAIL_USER;
+    const appPassword = process.env.GMAIL_APP_PASSWORD;
+    if (!user || !appPassword) throw new Error("Gmail no configurado.");
     const email = formatBriefEmail(brief, complexity);
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", "Idempotency-Key": requestId },
-      body: JSON.stringify({ from, to: [to], reply_to: brief.email, ...email }),
-      cache: "no-store"
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user, pass: appPassword },
+      connectionTimeout: 10000,
+      socketTimeout: 15000
     });
-    if (!response.ok) throw new Error(`Resend rejected email: ${response.status}`);
+    await transport.sendMail({
+      from: user,
+      to: user,
+      replyTo: brief.email,
+      ...email
+    });
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (cause) {
     if (cause instanceof SyntaxError) return NextResponse.json({ error: "El formato de la solicitud no es válido." }, { status: 400 });

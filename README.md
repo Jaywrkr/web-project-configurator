@@ -7,7 +7,7 @@ Aplicación para definir el alcance de un proyecto web antes de cotizarlo. El cl
 - Next.js 16 con App Router y React 19
 - TypeScript estricto
 - Tailwind CSS 4 y CSS ligero para el diseño
-- Resend para el envío de correo desde el servidor
+- Gmail SMTP para el envío de correo desde el servidor
 - Despliegue preparado para Vercel
 
 ## Instalación
@@ -33,17 +33,16 @@ npm run build
 
 | Variable | Uso |
 | --- | --- |
-| `RESEND_API_KEY` | Clave privada de Resend (`re_...`). Solo en el servidor. |
-| `BRIEF_FROM_EMAIL` | Remitente de un dominio verificado en Resend, por ejemplo `briefs@tudominio.com`. |
-| `BRIEF_TO_EMAIL` | Tu dirección de correo, donde recibirás todos los briefs. |
+| `GMAIL_USER` | Tu dirección de Gmail. Envía y recibe los briefs. |
+| `GMAIL_APP_PASSWORD` | Contraseña de aplicación de Google. Solo en el servidor; no es tu contraseña habitual. |
 
-1. Crea una cuenta en Resend y [verifica un dominio remitente](https://resend.com/docs/dashboard/domains/introduction).
-2. Crea una clave API con permiso de envío y completa `.env.local` para desarrollo.
-3. Configura las mismas variables en Vercel antes del despliegue. No subas `.env.local` ni la clave API a Git.
+1. Activa la [verificación en dos pasos de Google](https://support.google.com/accounts/answer/185839?hl=es) en la cuenta Gmail que recibirá los briefs.
+2. Crea una [contraseña de aplicación](https://support.google.com/accounts/answer/185833?hl=es) para el sitio. Si tu cuenta no ofrece esta opción, habrá que usar otro método de autenticación para Gmail.
+3. Completa `GMAIL_USER` y `GMAIL_APP_PASSWORD` en `.env.local` para desarrollo. En Vercel, configura las mismas variables en el proyecto. No subas `.env.local` ni compartas la contraseña en el chat.
 
 La interfaz pública carga sin estas variables, pero el envío devuelve un error hasta configurarlas. El borrador permanece en el dispositivo si el envío falla, para que el cliente pueda reintentarlo.
 
-El servidor valida todas las respuestas, calcula la complejidad y envía un mensaje de texto estructurado a `BRIEF_TO_EMAIL`. El destinatario es fijo y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. La puntuación numérica de complejidad se incluye solo en el correo interno.
+El servidor valida todas las respuestas, calcula la complejidad y envía un mensaje de texto estructurado desde `GMAIL_USER` a esa misma dirección. El destinatario es fijo y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. La puntuación numérica de complejidad se incluye solo en el correo interno.
 
 La bandeja de entrada funciona como archivo de solicitudes. Puedes crear una etiqueta o filtro para los asuntos que empiecen por “Nuevo brief web”. No existe un panel `/admin` ni almacenamiento de briefs en el servidor. El único guardado temporal es `localStorage` del dispositivo del cliente; se borra tras aceptar el proveedor el envío o al usar “Empezar de nuevo” con confirmación.
 
@@ -69,11 +68,11 @@ El estimador de precio en [`lib/pricing.ts`](lib/pricing.ts) está desactivado (
 
 ## Despliegue en Vercel
 
-Importa el repositorio como proyecto Next.js. Vercel detecta el framework y ejecuta `npm run build`. Configura las tres variables de correo en el proyecto y despliega. Después completa un brief de prueba y comprueba que llega a `BRIEF_TO_EMAIL`. Resend acepta el mensaje antes de responder al formulario; la entrega final también depende de los filtros de correo del destinatario.
+Importa el repositorio como proyecto Next.js. Vercel detecta el framework y ejecuta `npm run build`. Configura las dos variables de Gmail en el proyecto y despliega. Después completa un brief de prueba y comprueba que llega a tu Gmail. No necesitas comprar ni verificar un dominio: Vercel proporciona una URL `*.vercel.app`. El servidor espera a que Gmail acepte el mensaje antes de responder al formulario; la entrega final también depende de los filtros de correo del destinatario.
 
 ## Siguientes pasos
 
-- Verificar un dominio en Resend, configurar las variables y probar un envío real.
+- Configurar las variables de Gmail y probar un envío real.
 - Revisar los filtros de spam y crear una etiqueta para organizar los briefs.
 - Evaluar protección contra envíos automatizados si el formulario recibe mucho tráfico.
 - Definir tarifas internas si más adelante se desea activar el estimador.
