@@ -24,7 +24,7 @@ export function parseBrief(input: unknown): Brief {
     integrations: pickMany(data.integrations, choices.integrations), integration_notes: clean(data.integration_notes, 1000),
     domain_status: pick(data.domain_status, choices.domainStatuses), hosting_status: pick(data.hosting_status, choices.hostingStatuses),
     email_status: pick(data.email_status, choices.emailStatuses), email_accounts: pick(data.email_accounts, choices.emailAccounts),
-    deadline: pick(data.deadline, choices.deadlines), deadline_date: clean(data.deadline_date, 10), budget: pick(data.budget, choices.budgets), notes: clean(data.notes)
+    deadline: pick(data.deadline, choices.deadlines), deadline_date: clean(data.deadline_date, 10), notes: clean(data.notes)
   };
   if (!hasProducts(brief)) {
     brief.product_count = ""; brief.product_features = []; brief.commerce_type = ""; brief.commerce_features = [];

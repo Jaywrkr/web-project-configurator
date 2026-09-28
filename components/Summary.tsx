@@ -14,7 +14,7 @@ export function Summary({ brief, admin = false, storedComplexity }: { brief: Bri
     { title: "05 / Contenido", fields: [["Contenido disponible", brief.available_content], ["Ayuda requerida", brief.content_help]] },
     { title: "06 / Integraciones", fields: [["Conexiones", brief.integrations], ["Detalles", brief.integration_notes]] },
     { title: "07 / Infraestructura", fields: [["Dominio", brief.domain_status], ["Hosting web", brief.hosting_status], ["Correo corporativo (servicio independiente)", brief.email_status], ["Cuentas de correo", brief.email_accounts]] },
-    { title: "08 / Planificación", fields: [["Plazo", brief.deadline], ["Fecha específica", brief.deadline_date], ["Presupuesto orientativo", brief.budget], ["Comentarios", brief.notes]] }
+    { title: "08 / Planificación", fields: [["Plazo", brief.deadline], ["Fecha específica", brief.deadline_date], ["Comentarios", brief.notes]] }
   ];
   return <div className="summary"><ComplexityMeter {...complexity} showScore={admin} />
     {rows.map(({ title, fields }) => <section className="summary-section" key={title}><h3>{title}</h3><dl>{fields.filter(([, value]) => admin || (Array.isArray(value) ? value.length > 0 : Boolean(value))).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{show(value)}</dd></div>)}</dl></section>)}

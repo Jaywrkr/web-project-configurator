@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Web Project Configurator — Define tu web con claridad",
-  description: "Define el alcance de tu proyecto web paso a paso antes de cotizar. Un brief claro para construir la web que realmente necesitas.",
-  openGraph: { title: "Web Project Configurator", description: "Define tu web sin dejar cabos sueltos.", type: "website" }
+  title: "Formulario de proyecto web | webproject",
+  description: "Completa el formulario para describir tu proyecto web. Revisa tus respuestas y envíalas para preparar una cotización.",
+  openGraph: { title: "Formulario de proyecto web", description: "Responde las preguntas, revisa el resumen y envía tu solicitud.", type: "website" }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

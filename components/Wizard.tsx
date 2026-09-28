@@ -22,9 +22,8 @@ const titles: Record<number, [string, string]> = {
   8: ["Todo conectado.", "Selecciona los servicios con los que deberá integrarse la web."],
   9: ["La base técnica.", "Dominio, hosting y correo se consideran por separado."],
   10: ["Pongamos una fecha.", "Un plazo realista ayuda a planificar bien el proyecto."],
-  11: ["Contexto de inversión.", "Tu presupuesto nos orienta, pero no define automáticamente el precio."],
-  12: ["Una última cosa.", "Comparte cualquier detalle que aún no hayamos preguntado."],
-  13: ["Así se ve tu proyecto.", "Revisa los detalles antes de enviar la solicitud."]
+  11: ["Una última cosa.", "Comparte cualquier detalle que aún no hayamos preguntado."],
+  12: ["Así se ve tu proyecto.", "Revisa los detalles antes de enviar la solicitud."]
 };
 
 export function Wizard() {
@@ -41,11 +40,16 @@ export function Wizard() {
       if (saved) {
         const parsed = JSON.parse(saved) as { brief?: Partial<Brief>; step?: number };
         if (parsed.brief && typeof parsed.brief === "object") {
-          const previous = parsed.brief as Partial<Brief> & { project_type?: string };
+          const previous = parsed.brief as Partial<Brief> & { project_type?: string; budget?: string };
           const selected: unknown[] = Array.isArray(previous.project_types) ? previous.project_types : previous.project_type ? [previous.project_type] : [];
-          setBrief({ ...emptyBrief, ...previous, project_types: selected.filter((type): type is ProjectType => typeof type === "string" && projectTypes.some((option) => option === type)) });
+          const savedBrief = { ...previous };
+          delete savedBrief.budget;
+          delete savedBrief.project_type;
+          setBrief({ ...emptyBrief, ...savedBrief, project_types: selected.filter((type): type is ProjectType => typeof type === "string" && projectTypes.some((option) => option === type)) });
+          if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= 13) {
+            setStep(Math.min(12, "budget" in previous && parsed.step >= 12 ? parsed.step - 1 : parsed.step));
+          }
         }
-        if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= 13) setStep(parsed.step);
       }
     } catch { try { localStorage.removeItem(STORAGE_KEY); } catch {} }
     setLoaded(true);
@@ -53,7 +57,7 @@ export function Wizard() {
 
   useEffect(() => { if (loaded && !sent) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ brief, step })); } catch {} } }, [brief, step, loaded, sent]);
 
-  const steps = hasProducts(brief) ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] : [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  const steps = hasProducts(brief) ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12];
   const currentIndex = Math.max(0, steps.indexOf(step));
   const effectiveStep = steps[currentIndex];
   const update = <K extends keyof Brief>(key: K, value: Brief[K]) => { setBrief((previous) => ({ ...previous, [key]: value })); setError(null); };
@@ -62,7 +66,7 @@ export function Wizard() {
   async function next() {
     const issue = validateStep(effectiveStep, brief);
     if (issue) { setError(issue); return; }
-    if (effectiveStep !== 13) { navigate(steps[currentIndex + 1]); return; }
+    if (effectiveStep !== 12) { navigate(steps[currentIndex + 1]); return; }
     setBusy(true); setError(null);
     try {
       const response = await fetch("/api/briefs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(brief) });
@@ -83,9 +87,9 @@ export function Wizard() {
 
   return <main className="wizard-shell"><header className="wizard-top"><Link href="/" className="brand">web<span>project</span><i>.</i></Link><button type="button" onClick={restart} className="quiet-button">Empezar de nuevo</button></header>
     <div className="wizard-layout"><aside className="wizard-aside"><span className="eyebrow">CONFIGURADOR DE PROYECTOS</span><p>Un buen proyecto empieza con buenas preguntas.</p><div className="aside-rule" /><span className="aside-foot">Toma unos minutos. Tu progreso se guarda en este dispositivo.</span></aside>
-      <div className="wizard-main"><Progress current={currentIndex + 1} total={steps.length} /><div className="step-heading" key={effectiveStep}><span className="eyebrow">{effectiveStep === 13 ? "REVISIÓN FINAL" : `PASO ${String(currentIndex + 1).padStart(2, "0")}`}</span><h1>{titles[effectiveStep][0]}</h1><p>{titles[effectiveStep][1]}</p></div>
+      <div className="wizard-main"><Progress current={currentIndex + 1} total={steps.length} /><div className="step-heading" key={effectiveStep}><span className="eyebrow">{effectiveStep === 12 ? "REVISIÓN FINAL" : `PASO ${String(currentIndex + 1).padStart(2, "0")}`}</span><h1>{titles[effectiveStep][0]}</h1><p>{titles[effectiveStep][1]}</p></div>
         <div className="step-body" key={`body-${effectiveStep}`}><StepContent step={effectiveStep} brief={brief} update={update} /></div>
         {error && <p className="form-error" role="alert">{error}</p>}
-        <StepNavigation isFirst={currentIndex === 0} isLast={effectiveStep === 13} onBack={() => navigate(steps[currentIndex - 1])} onNext={next} busy={busy} />
+        <StepNavigation isFirst={currentIndex === 0} isLast={effectiveStep === 12} onBack={() => navigate(steps[currentIndex - 1])} onNext={next} busy={busy} />
       </div></div></main>;
 }

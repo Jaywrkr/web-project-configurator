@@ -15,4 +15,3 @@ export const hostingStatuses = ["Ya tenemos hosting", "Necesitamos hosting", "Qu
 export const emailStatuses = ["Ya tenemos correo corporativo", "Necesitamos correo corporativo", "No necesitamos correo", "No sabemos"];
 export const emailAccounts = ["1–5", "6–10", "11–25", "26–50", "Más de 50"];
 export const deadlines = ["Sin fecha definida", "2–3 meses", "1–2 meses", "3–4 semanas", "2–3 semanas", "Urgente"];
-export const budgets = ["Menos de $500", "$500–$1.000", "$1.000–$2.000", "$2.000–$5.000", "Más de $5.000", "Prefiero no indicar"];

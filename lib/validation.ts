@@ -29,7 +29,6 @@ export function validateStep(step: number, brief: Brief): string | null {
       if (!brief.domain_status || !brief.hosting_status || !brief.email_status) return "Responde las tres preguntas de infraestructura.";
       return brief.email_status === "Necesitamos correo corporativo" && !brief.email_accounts ? "Indica cuántas cuentas de correo necesitas." : null;
     case 10: return brief.deadline ? null : "Elige un plazo aproximado.";
-    case 11: return brief.budget ? null : "Selecciona una opción de presupuesto.";
     default: return null;
   }
 }

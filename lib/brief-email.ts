@@ -12,7 +12,7 @@ export function formatBriefEmail(brief: Brief, complexity: { score: number; leve
     ["CONTENIDO", [["Contenido disponible", brief.available_content], ["Ayuda requerida", brief.content_help]]],
     ["INTEGRACIONES", [["Integraciones", brief.integrations], ["Detalles de integración", brief.integration_notes]]],
     ["INFRAESTRUCTURA", [["Dominio", brief.domain_status], ["Hosting web", brief.hosting_status], ["Correo corporativo (servicio independiente)", brief.email_status], ["Cuentas de correo", brief.email_accounts]]],
-    ["PLANIFICACIÓN", [["Plazo", brief.deadline], ["Fecha específica", brief.deadline_date], ["Presupuesto orientativo", brief.budget], ["Comentarios", brief.notes]]]
+    ["PLANIFICACIÓN", [["Plazo", brief.deadline], ["Fecha específica", brief.deadline_date], ["Comentarios", brief.notes]]]
   ];
   const text = ["NUEVA SOLICITUD DE PROYECTO WEB", "", ...groups.flatMap(([title, fields]) => [title, ...fields.map(([label, content]) => `${label}: ${value(content)}`), ""]), `COMPLEJIDAD INTERNA: ${complexity.score}/100 · ${complexity.level}`].join("\n");
   return { subject: `Nuevo brief web — ${brief.company.replace(/[\r\n]+/g, " ")}`, text };
