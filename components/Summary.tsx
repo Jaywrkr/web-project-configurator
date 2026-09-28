@@ -1,11 +1,8 @@
-import { calculateComplexity } from "@/lib/complexity";
-import type { Brief, ComplexityLevel } from "@/lib/types";
-import { ComplexityMeter } from "./ComplexityMeter";
+import type { Brief } from "@/lib/types";
 
 const show = (value: string | string[]) => Array.isArray(value) ? (value.length ? value.join(", ") : "—") : (value || "—");
 
-export function Summary({ brief, admin = false, storedComplexity }: { brief: Brief; admin?: boolean; storedComplexity?: { score: number; level: ComplexityLevel } }) {
-  const complexity = storedComplexity ?? calculateComplexity(brief);
+export function Summary({ brief }: { brief: Brief }) {
   const rows: { title: string; fields: [string, string | string[]][] }[] = [
     { title: "01 / Cliente", fields: [["Empresa", brief.company], ["Contacto", brief.contact_name], ["Email", brief.email], ["Teléfono", brief.phone]] },
     { title: "02 / Proyecto", fields: [["Tipos", brief.project_types], ["Secciones", [...brief.sections.filter((s) => s !== "Otra"), ...(brief.other_section ? [brief.other_section] : [])]], ["Páginas", brief.page_count]] },
@@ -16,7 +13,7 @@ export function Summary({ brief, admin = false, storedComplexity }: { brief: Bri
     { title: "07 / Infraestructura", fields: [["Dominio", brief.domain_status], ["Hosting web", brief.hosting_status], ["Correo corporativo (servicio independiente)", brief.email_status], ["Cuentas de correo", brief.email_accounts]] },
     { title: "08 / Planificación", fields: [["Plazo", brief.deadline], ["Fecha específica", brief.deadline_date], ["Comentarios", brief.notes]] }
   ];
-  return <div className="summary"><ComplexityMeter {...complexity} showScore={admin} />
-    {rows.map(({ title, fields }) => <section className="summary-section" key={title}><h3>{title}</h3><dl>{fields.filter(([, value]) => admin || (Array.isArray(value) ? value.length > 0 : Boolean(value))).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{show(value)}</dd></div>)}</dl></section>)}
+  return <div className="summary">
+    {rows.map(({ title, fields }) => <section className="summary-section" key={title}><h3>{title}</h3><dl>{fields.filter(([, value]) => Array.isArray(value) ? value.length > 0 : Boolean(value)).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{show(value)}</dd></div>)}</dl></section>)}
   </div>;
 }

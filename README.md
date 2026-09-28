@@ -42,7 +42,7 @@ npm run build
 
 La interfaz pública carga sin estas variables, pero el envío devuelve un error hasta configurarlas. El borrador permanece en el dispositivo si el envío falla, para que el cliente pueda reintentarlo.
 
-El servidor valida todas las respuestas, calcula la complejidad y prepara un correo HTML con versión de texto y una cotización preliminar en PDF. El destinatario es fijo (`GMAIL_USER`) y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. El estimado y la puntuación numérica de complejidad se incluyen solo en el correo interno; el cliente no recibe una cotización automáticamente.
+El servidor valida todas las respuestas, calcula la complejidad y prepara un correo HTML con versión de texto y una cotización preliminar en PDF. El destinatario es fijo (`GMAIL_USER`) y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. El cliente no ve la calificación ni el precio; ambos quedan solo en el correo interno, y no recibe una cotización automáticamente.
 
 La bandeja de entrada funciona como archivo de solicitudes. Puedes crear una etiqueta o filtro para los asuntos que empiecen por “Nuevo brief web”. No existe un panel `/admin` ni almacenamiento de briefs en el servidor. El único guardado temporal es `localStorage` del dispositivo del cliente; se borra tras aceptar el proveedor el envío o al usar “Empezar de nuevo” con confirmación.
 

@@ -37,8 +37,8 @@ a{color:inherit;text-decoration:none}
 .aside-foot{max-width:260px;color:#666d65;font-size:13px;line-height:1.5;margin-top:22px}
 .wizard-main{width:min(100%,810px);margin:0 auto;padding:55px 7% 70px}
 .progress-meta{display:flex;justify-content:space-between;color:#667064;font-size:10px;letter-spacing:.13em;font-weight:700}
-.progress-track,.meter__track{height:3px;background:#dfe3d9;margin-top:14px}
-.progress-fill,.meter__fill{height:100%;background:#879c67;transition:width .3s}
+.progress-track{height:3px;background:#dfe3d9;margin-top:14px}
+.progress-fill{height:100%;background:#879c67;transition:width .3s}
 .step-heading{margin:64px 0 40px;animation:rise .3s ease-out}
 .step-heading h1{font-size:clamp(39px,4.4vw,68px);line-height:1.06;letter-spacing:-.065em;font-weight:600;margin:15px 0}
 .step-heading p{color:#737972;font-size:16px;line-height:1.5}
@@ -69,10 +69,6 @@ a{color:inherit;text-decoration:none}
 .url-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;background:#fff;border:1px solid var(--line);margin-bottom:5px;font-size:13px;overflow-wrap:anywhere}
 .url-list button{border:0;background:none;color:#666}
 .inline-note{color:#69716a;background:#ecefe8;padding:14px 17px;font-size:13px;line-height:1.5;margin:-20px 0 35px}
-.meter{background:#ecf0e6;padding:25px;margin-bottom:38px}
-.meter__header{display:flex;justify-content:space-between;gap:15px;font-size:13px}
-.meter__header strong{font-size:15px}
-.meter__track{background:#d3ddc7;height:6px;margin-top:20px}
 .summary-section{border-top:1px solid var(--line);padding:24px 0}
 .summary-section h3{font-size:12px;letter-spacing:.12em;color:#7d8679;margin:0 0 20px}
 .summary-section dl{margin:0}
