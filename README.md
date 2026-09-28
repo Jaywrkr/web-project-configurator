@@ -34,8 +34,8 @@ npm run build
 | Variable | Uso |
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase. Pública. |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública de Supabase. Preparada para la configuración del proyecto; la app actual no la necesita en el navegador. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Clave secreta utilizada solo por rutas y componentes de servidor. Nunca debe llevar prefijo `NEXT_PUBLIC_`. |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clave pública `sb_publishable_...` de Supabase, usada para iniciar sesión. |
+| `SUPABASE_SECRET_KEY` | Clave secreta `sb_secret_...` utilizada solo en el servidor. Nunca debe llevar prefijo `NEXT_PUBLIC_`. |
 | `ADMIN_USER_ID` | UUID de la única cuenta de Supabase Auth que puede abrir `/admin`. |
 
 La aplicación muestra la interfaz pública sin variables, pero no puede guardar solicitudes hasta configurar Supabase. El panel interno deniega el acceso si falta `ADMIN_USER_ID`. No subas `.env.local`; está ignorado por Git.
@@ -79,7 +79,7 @@ El estimador de precio en [`lib/pricing.ts`](lib/pricing.ts) está desactivado (
 
 ## Despliegue en Vercel
 
-Importa el repositorio como proyecto Next.js. Vercel detecta el framework y usa `npm run build`. Configura las variables de entorno en el proyecto Vercel y ejecuta el esquema SQL antes de recibir solicitudes. Mantén `SUPABASE_SERVICE_ROLE_KEY` únicamente en el entorno del servidor.
+Importa el repositorio como proyecto Next.js. Vercel detecta el framework y usa `npm run build`. Configura las variables de entorno en el proyecto Vercel y ejecuta el esquema SQL antes de recibir solicitudes. Mantén `SUPABASE_SECRET_KEY` únicamente en el entorno del servidor.
 
 ## Siguientes pasos
 
