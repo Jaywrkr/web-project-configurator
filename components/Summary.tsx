@@ -1,11 +1,11 @@
 import { calculateComplexity } from "@/lib/complexity";
-import type { Brief } from "@/lib/types";
+import type { Brief, ComplexityLevel } from "@/lib/types";
 import { ComplexityMeter } from "./ComplexityMeter";
 
 const show = (value: string | string[]) => Array.isArray(value) ? (value.length ? value.join(", ") : "—") : (value || "—");
 
-export function Summary({ brief, admin = false }: { brief: Brief; admin?: boolean }) {
-  const complexity = calculateComplexity(brief);
+export function Summary({ brief, admin = false, storedComplexity }: { brief: Brief; admin?: boolean; storedComplexity?: { score: number; level: ComplexityLevel } }) {
+  const complexity = storedComplexity ?? calculateComplexity(brief);
   const rows: { title: string; fields: [string, string | string[]][] }[] = [
     { title: "01 / Cliente", fields: [["Empresa", brief.company], ["Contacto", brief.contact_name], ["Email", brief.email], ["Teléfono", brief.phone]] },
     { title: "02 / Proyecto", fields: [["Tipo", brief.project_type], ["Secciones", [...brief.sections.filter((s) => s !== "Otra"), ...(brief.other_section ? [brief.other_section] : [])]], ["Páginas", brief.page_count]] },

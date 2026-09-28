@@ -2,12 +2,14 @@ import * as choices from "./options";
 import { emptyBrief, type Brief, type ProjectType } from "./types";
 import { hasProducts, validateStep } from "./validation";
 
+export class BriefValidationError extends Error {}
+
 const clean = (value: unknown, limit = 3000) => typeof value === "string" ? value.trim().slice(0, limit) : "";
 const pick = (value: unknown, allowed: readonly string[]) => allowed.includes(value as string) ? value as string : "";
 const pickMany = (value: unknown, allowed: readonly string[]) => Array.isArray(value) ? [...new Set(value.filter((item): item is string => typeof item === "string" && allowed.includes(item)))].slice(0, allowed.length) : [];
 
 export function parseBrief(input: unknown): Brief {
-  if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("Solicitud inválida.");
+  if (!input || typeof input !== "object" || Array.isArray(input)) throw new BriefValidationError("Solicitud inválida.");
   const data = input as Record<string, unknown>;
   const brief: Brief = {
     ...emptyBrief,
@@ -35,12 +37,12 @@ export function parseBrief(input: unknown): Brief {
   if (brief.content_help.includes("No")) brief.content_help = ["No"];
   for (const step of [1, 2, 3, ...(hasProducts(brief) ? [4] : []), 5, 6, 7, 8, 9, 10, 11]) {
     const issue = validateStep(step, brief);
-    if (issue) throw new Error(issue);
+    if (issue) throw new BriefValidationError(issue);
   }
   for (const url of brief.reference_urls) {
     try { const parsed = new URL(url); if (!["http:", "https:"].includes(parsed.protocol)) throw new Error(); }
-    catch { throw new Error("Una URL de referencia no es válida."); }
+    catch { throw new BriefValidationError("Una URL de referencia no es válida."); }
   }
-  if (brief.deadline_date && !/^\d{4}-\d{2}-\d{2}$/.test(brief.deadline_date)) throw new Error("La fecha indicada no es válida.");
+  if (brief.deadline_date && !/^\d{4}-\d{2}-\d{2}$/.test(brief.deadline_date)) throw new BriefValidationError("La fecha indicada no es válida.");
   return brief;
 }

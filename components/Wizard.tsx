@@ -42,11 +42,11 @@ export function Wizard() {
         if (parsed.brief && typeof parsed.brief === "object") setBrief({ ...emptyBrief, ...parsed.brief });
         if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= 13) setStep(parsed.step);
       }
-    } catch { localStorage.removeItem(STORAGE_KEY); }
+    } catch { try { localStorage.removeItem(STORAGE_KEY); } catch {} }
     setLoaded(true);
   }, []);
 
-  useEffect(() => { if (loaded && !sent) localStorage.setItem(STORAGE_KEY, JSON.stringify({ brief, step })); }, [brief, step, loaded, sent]);
+  useEffect(() => { if (loaded && !sent) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ brief, step })); } catch {} } }, [brief, step, loaded, sent]);
 
   const steps = hasProducts(brief) ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] : [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13];
   const currentIndex = Math.max(0, steps.indexOf(step));
@@ -62,7 +62,7 @@ export function Wizard() {
     try {
       const response = await fetch("/api/briefs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(brief) });
       if (!response.ok) throw new Error("No pudimos enviar tu solicitud. Inténtalo de nuevo en unos minutos.");
-      localStorage.removeItem(STORAGE_KEY);
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
       setSent(true);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Ocurrió un error al enviar la solicitud."); }
     finally { setBusy(false); }
@@ -70,7 +70,7 @@ export function Wizard() {
 
   function restart() {
     if (!window.confirm("¿Empezar de nuevo? Se borrará el progreso guardado en este dispositivo.")) return;
-    localStorage.removeItem(STORAGE_KEY); setBrief(emptyBrief); setStep(1); setSent(false); setError(null);
+    try { localStorage.removeItem(STORAGE_KEY); } catch {} setBrief(emptyBrief); setStep(1); setSent(false); setError(null);
   }
 
   if (!loaded) return <main className="wizard-shell" aria-busy="true" />;
