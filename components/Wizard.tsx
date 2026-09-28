@@ -33,20 +33,24 @@ export function Wizard() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [requestId, setRequestId] = useState("");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved) as { brief?: Partial<Brief>; step?: number };
+        const parsed = JSON.parse(saved) as { brief?: Partial<Brief>; step?: number; requestId?: string };
         if (parsed.brief && typeof parsed.brief === "object") setBrief({ ...emptyBrief, ...parsed.brief });
         if (typeof parsed.step === "number" && parsed.step >= 1 && parsed.step <= 13) setStep(parsed.step);
+        setRequestId(typeof parsed.requestId === "string" ? parsed.requestId : crypto.randomUUID());
+      } else {
+        setRequestId(crypto.randomUUID());
       }
-    } catch { try { localStorage.removeItem(STORAGE_KEY); } catch {} }
+    } catch { try { localStorage.removeItem(STORAGE_KEY); } catch {} setRequestId(crypto.randomUUID()); }
     setLoaded(true);
   }, []);
 
-  useEffect(() => { if (loaded && !sent) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ brief, step })); } catch {} } }, [brief, step, loaded, sent]);
+  useEffect(() => { if (loaded && !sent) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ brief, step, requestId })); } catch {} } }, [brief, step, requestId, loaded, sent]);
 
   const steps = hasProducts(brief) ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] : [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13];
   const currentIndex = Math.max(0, steps.indexOf(step));
@@ -60,7 +64,7 @@ export function Wizard() {
     if (effectiveStep !== 13) { navigate(steps[currentIndex + 1]); return; }
     setBusy(true); setError(null);
     try {
-      const response = await fetch("/api/briefs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(brief) });
+      const response = await fetch("/api/briefs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...brief, request_id: requestId }) });
       if (!response.ok) throw new Error("No pudimos enviar tu solicitud. Inténtalo de nuevo en unos minutos.");
       try { localStorage.removeItem(STORAGE_KEY); } catch {}
       setSent(true);
@@ -70,7 +74,7 @@ export function Wizard() {
 
   function restart() {
     if (!window.confirm("¿Empezar de nuevo? Se borrará el progreso guardado en este dispositivo.")) return;
-    try { localStorage.removeItem(STORAGE_KEY); } catch {} setBrief(emptyBrief); setStep(1); setSent(false); setError(null);
+    try { localStorage.removeItem(STORAGE_KEY); } catch {} setBrief(emptyBrief); setStep(1); setRequestId(crypto.randomUUID()); setSent(false); setError(null);
   }
 
   if (!loaded) return <main className="wizard-shell" aria-busy="true" />;

@@ -9,9 +9,6 @@ export type Brief = {
   deadline: string; deadline_date: string; budget: string; notes: string;
 };
 export type ComplexityLevel = "Baja" | "Media" | "Alta" | "Muy alta";
-export type StoredBrief = Brief & {
-  id: string; created_at: string; complexity_score: number; complexity_level: ComplexityLevel; status: string;
-};
 export const emptyBrief: Brief = {
   company: "", contact_name: "", email: "", phone: "", project_type: "", sections: [], other_section: "", page_count: "",
   product_count: "", product_features: [], commerce_type: "", commerce_features: [], admin_features: [], brand_status: "",
