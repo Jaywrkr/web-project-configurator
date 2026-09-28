@@ -42,7 +42,7 @@ npm run build
 
 La interfaz pública carga sin estas variables, pero el envío devuelve un error hasta configurarlas. El borrador permanece en el dispositivo si el envío falla, para que el cliente pueda reintentarlo.
 
-El servidor valida todas las respuestas, calcula la complejidad y envía un mensaje de texto estructurado desde `GMAIL_USER` a esa misma dirección. El destinatario es fijo y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. La puntuación numérica de complejidad se incluye solo en el correo interno.
+El servidor valida todas las respuestas, calcula la complejidad y prepara un correo HTML con versión de texto y una cotización preliminar en PDF. El destinatario es fijo (`GMAIL_USER`) y no se toma del formulario. El correo del cliente se usa como dirección de respuesta. El estimado y la puntuación numérica de complejidad se incluyen solo en el correo interno; el cliente no recibe una cotización automáticamente.
 
 La bandeja de entrada funciona como archivo de solicitudes. Puedes crear una etiqueta o filtro para los asuntos que empiecen por “Nuevo brief web”. No existe un panel `/admin` ni almacenamiento de briefs en el servidor. El único guardado temporal es `localStorage` del dispositivo del cliente; se borra tras aceptar el proveedor el envío o al usar “Empezar de nuevo” con confirmación.
 
@@ -58,13 +58,14 @@ La bandeja de entrada funciona como archivo de solicitudes. Puedes crear una eti
 | `lib/validation.ts` y `lib/brief-input.ts` | Validación en cliente y normalización estricta en servidor. |
 | `lib/brief-email.ts` | Formato del mensaje de correo con todas las respuestas. |
 | `lib/complexity.ts` | Puntuación de complejidad de 0 a 100. |
-| `lib/pricing.ts` | Estructura central configurable del estimador; desactivada en el MVP. |
+| `lib/pricing.ts` | Tarifas aprobadas y cálculo desglosado del estimado. |
+| `lib/quote-pdf.ts` | Generación de la cotización preliminar adjunta. |
 
 ## Complejidad
 
 [`lib/complexity.ts`](lib/complexity.ts) suma puntos por tipo de proyecto, cantidad de páginas y productos, módulos editables, integraciones, ayuda con contenido y urgencia. Si se eligen varios tipos, toma el de mayor complejidad y agrega 5 puntos por cada tipo adicional. El resultado se limita a 100. Los tramos son: Baja (0–24), Media (25–49), Alta (50–74) y Muy alta (75–100).
 
-El estimador de precio en [`lib/pricing.ts`](lib/pricing.ts) está desactivado (`enabled: false`). Los importes configurables todavía no están definidos.
+Las tarifas de [`lib/pricing.ts`](lib/pricing.ts) están [documentadas aquí](docs/pricing.md). El PDF se marca como borrador interno y señala los datos que requieren revisión manual. No compartir una cotización con el cliente sin confirmar alcance, impuestos, servicios externos y condiciones comerciales.
 
 ## Despliegue en Vercel
 
@@ -75,4 +76,4 @@ Importa el repositorio como proyecto Next.js. Vercel detecta el framework y ejec
 - Configurar las variables de Gmail y probar un envío real.
 - Revisar los filtros de spam y crear una etiqueta para organizar los briefs.
 - Evaluar protección contra envíos automatizados si el formulario recibe mucho tráfico.
-- Definir tarifas internas si más adelante se desea activar el estimador.
+- Revisar el primer correo real y su PDF adjunto antes de compartir cotizaciones con clientes.

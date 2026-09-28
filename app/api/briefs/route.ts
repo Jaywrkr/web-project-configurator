@@ -3,6 +3,8 @@ import nodemailer from "nodemailer";
 import { calculateComplexity } from "@/lib/complexity";
 import { BriefValidationError, parseBrief } from "@/lib/brief-input";
 import { formatBriefEmail } from "@/lib/brief-email";
+import { estimatePrice } from "@/lib/pricing";
+import { createQuotePdf } from "@/lib/quote-pdf";
 
 export const runtime = "nodejs";
 
@@ -16,7 +18,10 @@ export async function POST(request: Request) {
     const user = process.env.GMAIL_USER;
     const appPassword = process.env.GMAIL_APP_PASSWORD;
     if (!user || !appPassword) throw new Error("Gmail no configurado.");
-    const email = formatBriefEmail(brief, complexity);
+    const estimate = estimatePrice(brief);
+    const reference = `JWK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${crypto.randomUUID().slice(0, 6).toUpperCase()}`;
+    const email = formatBriefEmail(brief, complexity, estimate, reference);
+    const pdf = await createQuotePdf(brief, estimate, reference);
     const transport = nodemailer.createTransport({
       service: "gmail",
       auth: { user, pass: appPassword },
@@ -27,7 +32,8 @@ export async function POST(request: Request) {
       from: user,
       to: user,
       replyTo: brief.email,
-      ...email
+      ...email,
+      attachments: [{ filename: `cotizacion-preliminar-${reference}.pdf`, content: pdf, contentType: "application/pdf" }]
     });
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (cause) {
